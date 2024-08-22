@@ -1,0 +1,76 @@
+﻿@page "/allstudents"
+@using DataAccess.Model
+@using DataAccess.ViewModel
+@using System;
+@using System.Security.Cryptography;
+@using System.Text;
+
+@inject DataAccess.ViewModel.BaseDB bd
+
+<h3>All Students</h3>
+
+@if (bd==null)
+{
+    <p><em>Loading...</em></p>
+}
+else
+{
+    <table class="table">
+        <thead>
+            <tr>
+                <th>ID</th>
+                <th>FirstName</th>
+                <th>LastName</th>
+                <th>City Name</th>
+                <th>Phone</th>
+                <th>Email</th>
+                <th>Password</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var student in students)
+            {
+                City ?city = bd.selectCityById(student.City);
+                @if (city != null)
+                {
+                    <tr>
+                    <td>@student.Id</td>
+                    <td>@student.FirstName</td>
+                    <td>@student.LastName</td>
+                    <td>@city.CityName</td>
+                    <td>@student.Phone</td>
+                    <td>@student.Email</td>
+                     <td>@getHash(student.Password)</td>
+                    </tr>
+                }
+                else
+                {
+                <tr>
+                    <td>@student.Id</td>
+                    <td>@student.FirstName</td>
+                    <td>@student.LastName</td>
+                    <td></td>
+                    <td>@student.Phone</td>
+                    <td>@student.Email</td>
+                    <td>@getHash(student.Password)</td>
+                </tr>
+                }
+
+        }
+        </tbody>
+    </table>
+}
+
+@code {
+    private List<Student> students;
+
+
+    protected override async Task OnInitializedAsync()
+    {
+        students = bd.GetStudents();
+    }
+    public string getHash(string str)
+    {
+        return Convert.ToBase64String(SHA256.Create().ComputeHash(System.Text.Encoding.UTF8.GetBytes(str)));
+    }
+}
