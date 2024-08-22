@@ -1,0 +1,52 @@
+﻿@page "/alllessons"
+@using DataAccess.Model
+@using DataAccess.ViewModel
+
+@inject DataAccess.ViewModel.BaseDB bd
+
+<h3>All Lessons</h3>
+
+@if (bd == null)
+{
+    <p><em>Loading...</em></p>
+}
+else
+{
+    <table class="table">
+        <thead>
+            <tr>
+                <th>Std First name</th>
+                <th>Std Last name</th>
+                <th>Subject</th>
+                <th>Std Grade</th>
+                <th>Lectr Name</th>
+                <th>Lectr Last name</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var lesson in lessons)
+            {
+                <tr>
+                    <td>@lesson.FirstName</td>
+                    <td>@lesson.LastName</td>
+                    <td>@lesson.Subject</td>
+                    <td>@lesson.Grade</td>
+                    <td>@lesson.LectName</td>
+                    <td>@lesson.LectLName</td>
+          
+                </tr>
+            }
+        </tbody>
+    </table>
+}
+
+@code {
+    private LessonListB lessons;
+
+
+    protected override async Task OnInitializedAsync()
+    {
+        lessons = bd.GetLessons();
+    }
+}
+
