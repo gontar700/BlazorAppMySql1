@@ -1,0 +1,59 @@
+﻿@page "/insertstudent"
+@using DataAccess.Model;
+@using DataAccess.ViewModel;
+@inject FormService fs;
+@inject DataAccess.ViewModel.BaseDB bd
+
+
+@inject NavigationManager Navigation
+
+
+<h3>InsertStudent</h3>
+
+<EditForm Model="people" OnSubmit="HandleSubmit" FormName="formpeople">
+    <div class="container">
+        <div class="row justify-content-center">
+            <div class="form-group col-lg-6 col-md-8">
+                <label for="firstName">First Name</label>
+                <InputText id="firstName" @bind-Value="@people.FirstName" placeholder="First Name"></InputText>
+            </div>
+            <div class="form-group col-lg-6 col-md-8">
+                <label for="lastname">Last Name</label>
+                <InputText id="lastname" @bind-Value="@people.LastName" placeholder="Last Name"></InputText>
+            </div>
+        </div>
+        <div class="row justify-content-start">
+            <div class="d-flex align-items-start">
+                <label for="city" class="me-2">Select city</label>
+                <select id="city" class="form-control">
+                    <option value="">--Select an Item--</option>
+                    @foreach (var city in cities)
+                    {
+                        <option value="@city.Id">@city.CityName</option>
+                    }
+                </select>
+            </div>
+        </div>
+    </div>
+    <style>
+        .margin1{
+            margin: 50px;
+        }
+    </style>
+
+</EditForm>
+
+@code {
+ 
+    private People people = new People();
+
+    private CityList cities = BaseDB.citylist;
+ 
+
+
+    public void HandleSubmit()
+    {
+        fs.people = people;
+    }
+
+}

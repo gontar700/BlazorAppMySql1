@@ -1,4 +1,5 @@
 using BlazorAppMySql1.Components;
+using DataAccess.Model;
 using DataAccess.ViewModel;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -8,6 +9,7 @@ builder.Services.AddRazorComponents()
     .AddInteractiveServerComponents();
 builder.Services.AddServerSideBlazor();
 builder.Services.AddSingleton<BaseDB>(sp => new BaseDB("Server=localhost;Port=3306;Database=university;User=root;Password=Root1234"));
+builder.Services.AddSingleton<FormService>(sp => new FormService());
 
 var app = builder.Build();
 
