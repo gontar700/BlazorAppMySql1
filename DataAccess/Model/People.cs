@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 
 namespace DataAccess.Model
 {
+    public class People : BaseEntity
     {
         private string firstName;
         private string lastName;

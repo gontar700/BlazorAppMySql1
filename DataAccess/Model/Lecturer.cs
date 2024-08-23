@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace DataAccess.Model
 {
-    public class Lecturer :People
+    public class Lecturer : People
     {
         private LessonList lessons;
 

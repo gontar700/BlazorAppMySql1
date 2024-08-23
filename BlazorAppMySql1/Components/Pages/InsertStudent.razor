@@ -1,4 +1,5 @@
 ﻿@page "/insertstudent"
+@rendermode InteractiveServer
 @using DataAccess.Model;
 @using DataAccess.ViewModel;
 @inject FormService fs;
@@ -10,50 +11,76 @@
 
 <h3>InsertStudent</h3>
 
-<EditForm Model="people" OnSubmit="HandleSubmit" FormName="formpeople">
+<EditForm Model="@people" OnSubmit="HandleSubmit" FormName="formpeople">
     <div class="container">
         <div class="row justify-content-center">
             <div class="form-group col-lg-6 col-md-8">
                 <label for="firstName">First Name</label>
-                <InputText id="firstName" @bind-Value="@people.FirstName" placeholder="First Name"></InputText>
+                <InputText id="firstName" @bind-Value="@people.FirstName" placeholder="First Name"
+                           pattern="[A-Za-z]{2,}"
+                           minlength="2"
+                           required></InputText>
             </div>
             <div class="form-group col-lg-6 col-md-8">
                 <label for="lastname">Last Name</label>
-                <InputText id="lastname" @bind-Value="@people.LastName" placeholder="Last Name"></InputText>
+                <InputText id="lastname" @bind-Value="@people.LastName" placeholder="Last Name"
+                           pattern="[A-Za-z]{2,}"
+                           minlength="2"
+                           required></InputText>
             </div>
         </div>
-        <div class="row justify-content-start">
-            <div class="d-flex align-items-start">
+        <div class="row justify-content-start margin1">
+            <div class="d-flex align-items-start col-lg-6 col-md-6">
                 <label for="city" class="me-2">Select city</label>
-                <select id="city" class="form-control">
-                    <option value="">--Select an Item--</option>
+                <select id="city" @bind="@people.City" class="form-control" required>
+                    <option value=0>--Select an Item--</option>
                     @foreach (var city in cities)
                     {
                         <option value="@city.Id">@city.CityName</option>
                     }
                 </select>
+                
+            </div>
+            <div class="form-group col-lg-6 col-md-6 float-right">
+                <label for="phone">Phone</label>
+                <InputText id="phone" @bind-Value="@people.Phone" placeholder="Phone number"
+                           required></InputText>
+            </div>
+        </div>
+        <div class="row justify-content-start margin1">
+            <div class="form-group col-lg-6 col-md-6">
+                <label for="email">Email</label>
+                <InputText id="phone" @bind-Value="@people.Email" placeholder="Email"
+                           required></InputText>
+            </div>
+        </div>
+        <div class="row justify-content-center">
+            <div class="form-group col-lg-2 col-md-2">
+                <button type="submit" class="btn btn-primary">Submit</button>
             </div>
         </div>
     </div>
-    <style>
-        .margin1{
-            margin: 50px;
-        }
-    </style>
-
 </EditForm>
+<p>@efectedCounter row affected.</p>
 
 @code {
- 
+    private int efectedCounter = 0;
+
     private People people = new People();
 
     private CityList cities = BaseDB.citylist;
- 
 
+    private int rowEfected;
 
     public void HandleSubmit()
     {
         fs.people = people;
+        rowEfected = bd.insertPeople(fs.people);
+        efectedCounter += rowEfected;
+        people.FirstName = "";
+        people.LastName = "";
+        people.City = 0;
+        people.Phone = "";
+        people.Email = "";
     }
-
 }
