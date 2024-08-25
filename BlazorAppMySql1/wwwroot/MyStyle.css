@@ -1,4 +1,45 @@
-﻿select {
+﻿/* Home*/
+body {
+    height: 100%; /* Ensure html and body take full height */
+    width: 100%;
+    margin: 0; /* Remove default body margin */
+    /*display: flex;  Use flexbox for centering */
+    justify-content: center; /* Center horizontally */
+    align-items: center; /* Center vertically */
+    background-color: #f8f9fa; /* Light background */
+}
+#taunav1 {
+    width:38%;
+    opacity:0.2;
+}
+h1 {
+    font-size: 37px;
+    color: indigo;
+}
+
+#university {
+    margin: 30px 0 0 0;
+    display: none; /* Start hidden for fade-in effect */
+    width: 50vw; /* Width: 50% of the viewport width */
+    height: 50vh; /* Height: 50% of the viewport height */
+    object-fit: cover; /* Cover the area while preserving aspect ratio */
+    transition: transform 1s; /* Slower animation for movement */
+}
+.login-form {
+    display: block; /* Ensure it can be displayed */
+    opacity: 0; /* Start transparent for fade-in effect */
+    transform: translateY(20px); /* Start slightly down for movement */
+    transition: opacity 1s, transform 1s; /* Combining fade and move effects */
+    width: 200px;
+}
+/*.loginform {
+    width: 60px;
+}*/
+.form-group {
+    margin: 10px 0;
+}
+/**/
+select {
     max-width: 203px;
     max-height: 30px;
     font-size: 14px !important;

@@ -3,6 +3,22 @@
 
 <PageTitle>Home</PageTitle>
 
-<h1>Hello, world!</h1>
+<h1>Tel-Aviv university Balzor manging system</h1>
 
-Welcome to your new app.
+
+<!-- Central Image -->
+<img id="university" src="image/telaviv1.JPG" alt="University Image" class="img-fluid">
+
+<!-- Login Form -->
+<div class="login-form mt-4">
+    <h3>Login</h3>
+    <form @* class="loginform" *@>
+        <div class="form-group">
+            <input type="text" class="form-control" id="username" placeholder="Username" required>
+        </div>
+        <div class="form-group">
+            <input type="password" class="form-control" id="password" placeholder="Password" required>
+        </div>
+        <button type="submit" class="btn btn-primary btn-block">Login</button>
+    </form>
+</div>
