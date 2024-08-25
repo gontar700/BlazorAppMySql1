@@ -1,9 +1,7 @@
 ﻿using DataAccess.Model;
 using Dapper;
 using MySql.Data.MySqlClient;
-using System.Xml.Linq;
-using Google.Protobuf.WellKnownTypes;
-using Mysqlx.Crud;
+using System.Data.SqlClient;
 
 namespace DataAccess.ViewModel
 {
@@ -38,6 +36,32 @@ namespace DataAccess.ViewModel
                 return students;
             }
         }
+
+        public Student GetStudentById(int id)
+        {
+            try
+            {
+                using (var connection = new MySqlConnection(connectionString))
+                {
+                    connection.Open();
+                    Student student = connection.QuerySingleOrDefault<Student>("SELECT * FROM people AS T1 INNER JOIN student AS T2 ON T1.ID = T2.ID WHERE T1.ID = @Id", new { Id = id });
+                    return student;
+                }
+            }
+            catch (MySqlException ex)
+            {
+                // Handle MySQL specific exceptions here
+                Console.WriteLine($"MySQL Error: {ex.Message}");
+                return null;
+            }
+            catch (Exception ex)
+            {
+                // Handle other potential exceptions
+                Console.WriteLine($"General Error: {ex.Message}");
+                return null; // Return null if there's a general exception
+            }
+        }
+
         //Get city by id
         public City? selectCityById(int id)
         {
@@ -58,7 +82,7 @@ namespace DataAccess.ViewModel
         }
 
         //Get all lesson for student or lecturer
-        public LessonList GetLessonsById(int? studentId, int? lecturerId)
+        public LessonList GetLessonsByEntity(int? studentId, int? lecturerId)
         {
             using (var connection = new MySqlConnection(connectionString))
             {
@@ -77,7 +101,7 @@ namespace DataAccess.ViewModel
 
         }
 
-        //Insert student
+        //Insert people , student
         public int insertPeople(People people)
         {
             int succeed = 0;
@@ -167,6 +191,51 @@ namespace DataAccess.ViewModel
             }
             return rowsAffected;
         }
+
+        //Update student
+        public Boolean updateStudent(Student selectStudent)
+        {
+            //int rowsAffected = 0;
+            Boolean success = false;
+            try
+            {
+                using (var connection = new MySqlConnection(connectionString))
+                {
+                    connection.Open();
+                    string sql = "UPDATE people " +
+                             "SET FirstName = @FirstName, LastName = @LastName, City = @City, Phone = @Phone, Email = @Email " +
+                             "WHERE ID = @ID;";
+                    using (MySqlCommand command = new MySqlCommand(sql, connection))
+                    {
+                        // Add parameters to avoid SQL injection
+                        command.Parameters.AddWithValue("@FirstName", selectStudent.FirstName);
+                        command.Parameters.AddWithValue("@LastName", selectStudent.LastName);
+                        command.Parameters.AddWithValue("@City", selectStudent.City);
+                        command.Parameters.AddWithValue("@Phone", selectStudent.Phone);
+                        command.Parameters.AddWithValue("@Email", selectStudent.Email);
+                        command.Parameters.AddWithValue("@ID", selectStudent.Id);
+
+                        // Execute the command
+                        int rowsAffected = command.ExecuteNonQuery();
+
+                        // Check the number of affected rows
+                        if (rowsAffected > 0)
+                        {
+                            return true;
+                        }
+                        return false;
+                    }
+                }
+            }
+            catch (MySqlException ex)
+            {
+                // Handle MySQL specific exceptions here
+                Console.WriteLine($"MySQL Error: {ex.Message}");
+                return false;
+            }
+            
+        }
+
         public string randomPassword()
         {
             Random rand = new Random();

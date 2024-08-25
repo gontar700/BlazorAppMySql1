@@ -1,0 +1,100 @@
+﻿@page "/updatestudent"
+@rendermode InteractiveServer
+@using DataAccess.Model;
+@using DataAccess.ViewModel;
+@inject FormService fs;
+@inject DataAccess.ViewModel.BaseDB bd
+
+<h3>Update Student</h3>
+
+@if (students == null)
+{
+    <p>Loading...</p>
+}
+else
+{
+    <select @onchange="OnStudentSelected">
+        <option value="">Select a Student</option>
+        @foreach (var student in students)
+        {
+            <option value="@student.Id">@($"{student.FirstName} {student.LastName}")</option>
+        }
+    </select>
+
+    @if (selectedStudent != null)
+    {
+        <EditForm Model="@selectedStudent" OnValidSubmit="HandleValidSubmit">
+            <DataAnnotationsValidator />
+            <ValidationSummary />
+
+            <div class="form-group col-lg-6 col-md-8">
+                <label for="firstName">First Name</label>
+                <InputText id="firstName" @bind-Value="@selectedStudent.FirstName" placeholder="First Name"
+                           pattern="[A-Za-z]{2,}"
+                           minlength="2"
+                           required></InputText>
+            </div>
+            <div class="form-group col-lg-6 col-md-8">
+                <label for="lastname">Last Name</label>
+                <InputText id="lastname" @bind-Value="@selectedStudent.LastName" placeholder="Last Name"
+                           pattern="[A-Za-z]{2,}"
+                           minlength="2"
+                           required></InputText>
+            </div>
+            <div>
+                <label>City:</label>
+                <label for="city" class="me-2">Select city</label>
+                <select id="city" @bind="@selectedStudent.City" class="form-control" required>
+                    <option value=0>--Select an Item--</option>
+                    @foreach (var city in cities)
+                    {
+                        <option value="@city.Id">@city.CityName</option>
+                    }
+                </select>
+            </div>
+            <div class="form-group col-lg-6 col-md-6 float-right">
+                <label for="phone">Phone</label>
+                <InputText id="phone" @bind-Value="@selectedStudent.Phone" placeholder="Phone number"
+                           required></InputText>
+            </div>
+            <div class="form-group col-lg-6 col-md-6">
+                <label for="email">Email</label>
+                <InputText id="phone" @bind-Value="@selectedStudent.Email" placeholder="Email"
+                           required></InputText>
+            </div>
+            <button type="submit">Update Student</button>
+        </EditForm>
+    }
+}
+@if (updateSuccess)
+{
+    <p>Student's detailes were updated successfully</p>
+}
+
+
+@code {
+    private List<Student> students;
+
+    private Student selectedStudent;
+
+    private CityList cities = BaseDB.citylist;
+
+    private bool updateSuccess=false;
+
+    protected override void OnInitialized()
+    {
+        students = bd.GetStudents();
+    }
+
+    private void OnStudentSelected(ChangeEventArgs e)
+    {
+        var id = int.Parse(e.Value.ToString());
+        selectedStudent = bd.GetStudentById(id);
+        updateSuccess = false;
+    }
+
+    private void HandleValidSubmit()
+    {
+         updateSuccess = bd.updateStudent(selectedStudent);
+    }
+}
